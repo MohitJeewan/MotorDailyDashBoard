@@ -102,8 +102,6 @@
     <div class="container title-container">
       <center>  <h1>MOTOR OD CLAIMS..</h1></center>
     </div>
-
- 
     
     <div class="container upload-container">
         <input type="file" id="fileInput" accept=".csv, .xlsx, .pdf, .jpeg, .jpg, .png" multiple aria-label="Choose file">
@@ -157,13 +155,28 @@
                 <p><strong>File Name:</strong> ${fileInfo.fileName}</p>
                 <p><strong>Upload Date:</strong> ${fileInfo.date}</p>
                 <div class="file-buttons">
-                    <a href="${fileInfo.url}" download="${fileInfo.fileName}" class="downloadButton">Download</a>
+                    <button class="downloadButton">Download</button>
                     <button class="deleteButton">Delete</button>
                 </div>
             `;
             fileDiv.innerHTML = fileDetails;
 
             fileInfoContainer.appendChild(fileDiv);
+
+            fileDiv.querySelector('.downloadButton').addEventListener('click', function(event) {
+                event.preventDefault();
+                const password = prompt('Enter admin password to download the file:');
+                if (password === 'mohit') {
+                    const link = document.createElement('a');
+                    link.href = fileInfo.url;
+                    link.download = fileInfo.fileName;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } else {
+                    alert('Incorrect password. File not downloaded.');
+                }
+            });
 
             fileDiv.querySelector('.deleteButton').addEventListener('click', function() {
                 const password = prompt('Enter admin password to delete the file:');
@@ -245,7 +258,20 @@
                 const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
                 const url = URL.createObjectURL(blob);
                 fileInfo.url = url;
-                document.querySelector(`.file-info[data-file-name="${fileInfo.fileName}"] .downloadButton`).setAttribute('href', url);
+                document.querySelector(`.file-info[data-file-name="${fileInfo.fileName}"] .downloadButton`).addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const password = prompt('Enter admin password to download the file:');
+                    if (password === 'mohit') {
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = fileInfo.fileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    } else {
+                        alert('Incorrect password. File not downloaded.');
+                    }
+                });
             });
         };
     </script>
